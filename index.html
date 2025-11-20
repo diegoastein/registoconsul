@@ -468,8 +468,19 @@
         // --- Lógica de Firebase y CRUD Adicional ---
 
         async function initFirebase() {
-            // ... (La lógica de initFirebase es la misma)
             try {
+                // VERIFICACIÓN CRÍTICA DE CONFIGURACIÓN
+                if (Object.keys(firebaseConfig).length === 0) {
+                    document.getElementById('loading-overlay').classList.add('hidden');
+                    openModal(
+                        "Error Fatal: Configuración Faltante", 
+                        "La clave de API de Firebase no ha sido proporcionada por el entorno. Por favor, asegúrese de haber configurado su proyecto de Firebase según la guía.", 
+                        true
+                    );
+                    // Salir de la inicialización si la configuración es incorrecta
+                    return; 
+                }
+                
                 setLogLevel('debug');
                 
                 app = initializeApp(firebaseConfig);
