@@ -4,12 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Registro de Alto Riesgo - Web App</title>
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 </head>
 <body class="bg-slate-100 min-h-screen">
   <div class="max-w-6xl mx-auto p-4 md:p-6 space-y-6">
-    <!-- Título -->
     <header class="bg-white shadow-sm rounded-xl p-4 md:p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
       <div>
         <h1 class="text-2xl font-bold text-slate-800">Registro de Alto Riesgo</h1>
@@ -22,7 +21,6 @@
       </div>
     </header>
 
-    <!-- Formulario de carga / edición -->
     <section class="bg-white rounded-xl shadow-sm p-4 md:p-6 space-y-4">
       <div class="flex items-center justify-between">
         <h2 class="text-lg font-semibold text-slate-800">Ingreso / Edición de Registro</h2>
@@ -32,14 +30,12 @@
       </div>
 
       <form id="formPaciente" class="grid md:grid-cols-3 gap-4">
-        <!-- Fecha de Nacimiento -->
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1">Fecha de nacimiento</label>
           <input type="date" id="fechaNacimiento" required
                  class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
         </div>
 
-        <!-- DNI -->
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1">DNI</label>
           <input type="text" id="dni" required
@@ -47,7 +43,6 @@
                  placeholder="Sólo números" />
         </div>
 
-        <!-- Peso al nacer -->
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1">Peso al nacer (g)</label>
           <input type="number" id="peso" min="0"
@@ -55,7 +50,6 @@
                  placeholder="Ej: 3200" />
         </div>
 
-        <!-- Edad gestacional -->
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1">Edad gestacional (semanas)</label>
           <input type="number" id="edadGestacional" min="0" max="45"
@@ -63,7 +57,6 @@
                  placeholder="Ej: 38" />
         </div>
 
-        <!-- Parto o cesárea -->
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1">Tipo de nacimiento</label>
           <select id="tipoParto"
@@ -74,7 +67,6 @@
           </select>
         </div>
 
-        <!-- Apgar -->
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1">Apgar</label>
           <input type="text" id="apgar"
@@ -82,7 +74,6 @@
                  placeholder="Ej: 8/9" />
         </div>
 
-        <!-- Días internación Neo -->
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1">Días de internación en Neo</label>
           <input type="number" id="diasNeo" min="0"
@@ -90,7 +81,6 @@
                  placeholder="Ej: 5" />
         </div>
 
-        <!-- Edad materna -->
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1">Edad materna</label>
           <input type="number" id="edadMaterna" min="10" max="60"
@@ -98,7 +88,6 @@
                  placeholder="Ej: 29" />
         </div>
 
-        <!-- Otros -->
         <div class="md:col-span-3">
           <label class="block text-sm font-medium text-slate-700 mb-1">Otros (observaciones)</label>
           <textarea id="otros" rows="2"
@@ -106,74 +95,84 @@
                     placeholder="Antecedentes, comentarios, etc."></textarea>
         </div>
 
-        <!-- Botones -->
         <div class="md:col-span-3 flex flex-wrap gap-3">
           <button type="submit"
-                  class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium text-white bg-sky-600 hover:bg-sky-700">
+                  class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium text-white bg-sky-600 hover:bg-sky-700 transition-colors">
             Guardar registro
           </button>
           <button type="button" id="btnCancelarEdicion"
-                  class="hidden inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium border border-slate-300 text-slate-700 hover:bg-slate-50">
+                  class="hidden inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium border border-slate-300 text-slate-700 hover:bg-slate-50 transition-colors">
             Cancelar edición
           </button>
         </div>
       </form>
     </section>
 
-    <!-- Búsqueda por DNI + filtros de fecha para exportación -->
     <section class="bg-white rounded-xl shadow-sm p-4 md:p-6 space-y-4">
-      <h2 class="text-lg font-semibold text-slate-800">Búsqueda y filtros</h2>
-      <div class="grid md:grid-cols-3 gap-4 items-end">
-        <!-- Buscar por DNI -->
-        <div>
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <h2 class="text-lg font-semibold text-slate-800">Búsqueda y Acciones</h2>
+        <button id="btnVerTodos" class="text-xs text-sky-700 hover:underline">
+          Ver todos los registros
+        </button>
+      </div>
+      
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+        <div class="lg:col-span-1">
           <label class="block text-sm font-medium text-slate-700 mb-1">Buscar por DNI</label>
           <div class="flex gap-2">
             <input type="text" id="dniBusqueda"
                    class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
-                   placeholder="DNI a buscar" />
+                   placeholder="DNI" />
             <button id="btnBuscarDNI"
-                    class="px-4 py-2 rounded-lg text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700">
-              Buscar
+                    class="px-3 py-2 rounded-lg text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+              </svg>
             </button>
           </div>
-          <button id="btnVerTodos"
-                  class="mt-2 text-xs text-sky-700 hover:underline">
-            Ver todos los registros
-          </button>
         </div>
 
-        <!-- Filtro por fecha desde -->
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Desde (Fecha de nacimiento)</label>
-          <input type="date" id="fechaDesde"
-                 class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        <div class="lg:col-span-1">
+          <label class="block text-sm font-medium text-slate-700 mb-1">Buscar por Fechas (Rango)</label>
+          <div class="flex gap-1 items-center">
+            <input type="date" id="busqFechaDesde" class="w-full border rounded-lg px-2 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-sky-500" title="Desde" />
+            <span class="text-slate-400">-</span>
+            <input type="date" id="busqFechaHasta" class="w-full border rounded-lg px-2 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-sky-500" title="Hasta" />
+            
+            <button id="btnBuscarRango"
+                    class="ml-1 px-3 py-2 rounded-lg text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+              </svg>
+            </button>
+          </div>
         </div>
 
-        <!-- Filtro por fecha hasta -->
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Hasta (Fecha de nacimiento)</label>
-          <input type="date" id="fechaHasta"
-                 class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        <div class="lg:col-span-2 border-l pl-4 border-slate-200">
+            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Exportar a CSV (Por fecha)</label>
+            <div class="flex gap-2">
+                <div class="w-1/2">
+                    <input type="date" id="fechaDesde" class="w-full border rounded-lg px-2 py-1 text-xs text-slate-600" title="Desde" />
+                </div>
+                <div class="w-1/2">
+                    <input type="date" id="fechaHasta" class="w-full border rounded-lg px-2 py-1 text-xs text-slate-600" title="Hasta" />
+                </div>
+            </div>
+            <div class="flex gap-2 mt-2">
+                <button id="btnExportarFiltrados" class="flex-1 px-3 py-1.5 rounded text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 text-center transition-colors">
+                    Exportar rango
+                </button>
+                <button id="btnExportarTodos" class="flex-1 px-3 py-1.5 rounded text-xs font-medium border border-slate-300 text-slate-700 hover:bg-slate-50 text-center transition-colors">
+                    Exportar todo
+                </button>
+            </div>
         </div>
-      </div>
-
-      <!-- Botones exportar -->
-      <div class="flex flex-wrap gap-3 pt-2 border-t border-slate-200 mt-4">
-        <button id="btnExportarFiltrados"
-                class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">
-          Exportar filtrados (CSV)
-        </button>
-        <button id="btnExportarTodos"
-                class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium border border-slate-300 text-slate-700 hover:bg-slate-50">
-          Exportar todos (CSV)
-        </button>
       </div>
     </section>
 
-    <!-- Estadísticas -->
     <section class="bg-white rounded-xl shadow-sm p-4 md:p-6 space-y-4">
       <div class="flex items-center justify-between">
-        <h2 class="text-lg font-semibold text-slate-800">Estadísticas (sobre registros listados)</h2>
+        <h2 class="text-lg font-semibold text-slate-800">Estadísticas (registros en pantalla)</h2>
         <span id="contadorRegistros" class="text-xs text-slate-500">0 registros</span>
       </div>
 
@@ -197,7 +196,6 @@
       </div>
     </section>
 
-    <!-- Tabla de resultados -->
     <section class="bg-white rounded-xl shadow-sm p-4 md:p-6 space-y-4">
       <h2 class="text-lg font-semibold text-slate-800">Registros</h2>
       <div class="overflow-x-auto border border-slate-200 rounded-lg">
@@ -217,14 +215,14 @@
             </tr>
           </thead>
           <tbody id="tablaRegistros" class="divide-y divide-slate-100">
-            <!-- Filas dinámicas -->
-          </tbody>
+            </tbody>
         </table>
       </div>
     </section>
   </div>
 
-  <!-- Firebase + lógica de la app -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
   <script type="module">
     // ----------------- Firebase -----------------
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -241,22 +239,22 @@
       doc
     } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    // TODO: Reemplazar con la configuración real de tu proyecto Firebase
- const firebaseConfig = {
-  apiKey: "AIzaSyCvpK-ZofDtZQKluLDT1-GrFYsFLUwP_2Y",
-  authDomain: "altoriesgo.firebaseapp.com",
-  projectId: "altoriesgo",
-  storageBucket: "altoriesgo.firebasestorage.app",
-  messagingSenderId: "1084604517694",
-  appId: "1:1084604517694:web:82bbb1ad3bf8d602aab06f"
-};
+    // Configuración de tu proyecto
+    const firebaseConfig = {
+      apiKey: "AIzaSyCvpK-ZofDtZQKluLDT1-GrFYsFLUwP_2Y",
+      authDomain: "altoriesgo.firebaseapp.com",
+      projectId: "altoriesgo",
+      storageBucket: "altoriesgo.firebasestorage.app",
+      messagingSenderId: "1084604517694",
+      appId: "1:1084604517694:web:82bbb1ad3bf8d602aab06f"
+    };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const colPacientes = collection(db, "recienNacidos");
 
     // ----------------- Estado en memoria -----------------
-    let registrosActuales = []; // Lo que se muestra en la tabla
+    let registrosActuales = []; 
     let idEnEdicion = null;
 
     // ----------------- Referencias DOM -----------------
@@ -264,15 +262,24 @@
     const modoFormulario = document.getElementById("modoFormulario");
     const btnCancelarEdicion = document.getElementById("btnCancelarEdicion");
 
+    // Buscadores
     const dniBusqueda = document.getElementById("dniBusqueda");
     const btnBuscarDNI = document.getElementById("btnBuscarDNI");
+    
+    // NUEVO: Buscador rango
+    const busqFechaDesde = document.getElementById("busqFechaDesde");
+    const busqFechaHasta = document.getElementById("busqFechaHasta");
+    const btnBuscarRango = document.getElementById("btnBuscarRango");
+
     const btnVerTodos = document.getElementById("btnVerTodos");
 
+    // Filtros Exportación
     const fechaDesde = document.getElementById("fechaDesde");
     const fechaHasta = document.getElementById("fechaHasta");
     const btnExportarFiltrados = document.getElementById("btnExportarFiltrados");
     const btnExportarTodos = document.getElementById("btnExportarTodos");
 
+    // Tabla y Stats
     const tablaRegistros = document.getElementById("tablaRegistros");
     const contadorRegistros = document.getElementById("contadorRegistros");
     const promPeso = document.getElementById("promPeso");
@@ -281,19 +288,34 @@
     const promEdadMadre = document.getElementById("promEdadMadre");
 
     // ----------------- Utilidades -----------------
+    
+    // Función para mostrar Toast (Notificación)
+    function mostrarToast(mensaje, esError = false) {
+        Toastify({
+            text: mensaje,
+            duration: 3000,
+            gravity: "top", 
+            position: "right", 
+            style: {
+                background: esError ? "#ef4444" : "#10b981",
+                borderRadius: "8px",
+                fontSize: "14px",
+                boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
+            }
+        }).showToast();
+    }
+
     function limpiarFormulario() {
       form.reset();
       idEnEdicion = null;
       modoFormulario.textContent = "Modo: Alta";
-      modoFormulario.className =
-        "text-xs px-2 py-1 rounded-full bg-sky-100 text-sky-700";
+      modoFormulario.className = "text-xs px-2 py-1 rounded-full bg-sky-100 text-sky-700";
       btnCancelarEdicion.classList.add("hidden");
     }
 
     function setModoEdicion() {
       modoFormulario.textContent = "Modo: Edición";
-      modoFormulario.className =
-        "text-xs px-2 py-1 rounded-full bg-amber-100 text-amber-700";
+      modoFormulario.className = "text-xs px-2 py-1 rounded-full bg-amber-100 text-amber-700";
       btnCancelarEdicion.classList.remove("hidden");
     }
 
@@ -344,8 +366,9 @@
       if (!registrosActuales.length) {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td colspan="10" class="px-3 py-3 text-center text-slate-400 text-sm">
-            Sin registros para mostrar.
+          <td colspan="10" class="px-3 py-8 text-center text-slate-400 text-sm">
+            <p>No hay datos visibles.</p>
+            <p class="text-xs mt-1">Realizá una búsqueda o cargá un nuevo paciente.</p>
           </td>
         `;
         tablaRegistros.appendChild(tr);
@@ -382,7 +405,7 @@
         tablaRegistros.appendChild(tr);
       }
 
-      // Acciones editar / borrar
+      // Eventos botones Editar
       tablaRegistros.querySelectorAll(".btn-editar").forEach(btn => {
         btn.addEventListener("click", () => {
           const id = btn.getAttribute("data-id");
@@ -401,19 +424,23 @@
 
           idEnEdicion = id;
           setModoEdicion();
+          form.scrollIntoView({ behavior: 'smooth' });
         });
       });
 
+      // Eventos botones Borrar
       tablaRegistros.querySelectorAll(".btn-borrar").forEach(btn => {
         btn.addEventListener("click", async () => {
           const id = btn.getAttribute("data-id");
           if (!confirm("¿Seguro que querés borrar este registro?")) return;
           try {
             await deleteDoc(doc(db, "recienNacidos", id));
-            await cargarTodosRegistros();
+            mostrarToast("Registro eliminado correctamente");
+            registrosActuales = registrosActuales.filter(r => r.id !== id);
+            renderTabla();
           } catch (e) {
             console.error(e);
-            alert("Error al borrar el registro.");
+            mostrarToast("Error al borrar el registro", true);
           }
         });
       });
@@ -421,22 +448,24 @@
       actualizarEstadisticas();
     }
 
-    // ----------------- Carga de datos desde Firestore -----------------
+    // ----------------- Consultas -----------------
+
     async function cargarTodosRegistros() {
       try {
-        const q = query(colPacientes, orderBy("fechaNacimiento", "asc"));
+        const q = query(colPacientes, orderBy("fechaNacimiento", "desc"));
         const snap = await getDocs(q);
         registrosActuales = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         renderTabla();
+        mostrarToast("Listado completo cargado");
       } catch (e) {
         console.error(e);
-        alert("Error al cargar registros.");
+        mostrarToast("Error al cargar registros", true);
       }
     }
 
     async function buscarPorDNI(dniValor) {
       if (!dniValor) {
-        alert("Ingresá un DNI para buscar.");
+        mostrarToast("Ingresá un DNI para buscar", true);
         return;
       }
       try {
@@ -444,39 +473,65 @@
         const snap = await getDocs(q);
         registrosActuales = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         renderTabla();
+        if(registrosActuales.length === 0) {
+            mostrarToast("No se encontró ningún paciente con ese DNI", true);
+        } else {
+            mostrarToast(`Se encontraron ${registrosActuales.length} registro(s)`);
+        }
       } catch (e) {
         console.error(e);
-        alert("Error en la búsqueda por DNI.");
+        mostrarToast("Error en la búsqueda por DNI", true);
+      }
+    }
+
+    async function buscarPorRango(desde, hasta) {
+      if (!desde || !hasta) {
+        mostrarToast("Ingresá ambas fechas (Desde y Hasta)", true);
+        return;
+      }
+      if (desde > hasta) {
+        mostrarToast("La fecha 'Desde' no puede ser mayor a 'Hasta'", true);
+        return;
+      }
+
+      try {
+        // Consulta Firestore con rango
+        const q = query(
+          colPacientes, 
+          where("fechaNacimiento", ">=", desde),
+          where("fechaNacimiento", "<=", hasta),
+          orderBy("fechaNacimiento", "asc")
+        );
+        
+        const snap = await getDocs(q);
+        registrosActuales = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderTabla();
+        
+        if(registrosActuales.length === 0) {
+            mostrarToast("No hay nacimientos en ese rango", true);
+        } else {
+            mostrarToast(`Se encontraron ${registrosActuales.length} registro(s)`);
+        }
+      } catch (e) {
+        console.error(e);
+        mostrarToast("Error buscando por rango de fechas", true);
       }
     }
 
     // ----------------- Exportar CSV -----------------
     function generarCSV(lista) {
       const encabezados = [
-        "id",
-        "fechaNacimiento",
-        "dni",
-        "peso",
-        "edadGestacional",
-        "tipoParto",
-        "apgar",
-        "diasNeo",
-        "edadMaterna",
-        "otros",
-        "creadoEn"
+        "id", "fechaNacimiento", "dni", "peso", "edadGestacional",
+        "tipoParto", "apgar", "diasNeo", "edadMaterna", "otros", "creadoEn"
       ];
-
       const filas = lista.map(r =>
-        encabezados
-          .map(campo => {
+        encabezados.map(campo => {
             let v = r[campo];
             if (v === null || v === undefined) v = "";
-            v = String(v).replace(/"/g, '""'); // escapar comillas
+            v = String(v).replace(/"/g, '""'); 
             return `"${v}"`;
-          })
-          .join(",")
+          }).join(",")
       );
-
       return encabezados.join(",") + "\n" + filas.join("\n");
     }
 
@@ -492,12 +547,11 @@
       URL.revokeObjectURL(url);
     }
 
-    function filtrarPorFecha(lista) {
+    function filtrarPorFechaLocal(lista) {
       const desde = fechaDesde.value ? new Date(fechaDesde.value) : null;
       const hasta = fechaHasta.value ? new Date(fechaHasta.value) : null;
-
       if (!desde && !hasta) return lista;
-
+      
       return lista.filter(r => {
         if (!r.fechaNacimiento) return false;
         const f = new Date(r.fechaNacimiento);
@@ -513,21 +567,26 @@
       const data = formToData();
 
       if (!data.fechaNacimiento || !data.dni) {
-        alert("Fecha de nacimiento y DNI son obligatorios.");
+        mostrarToast("Fecha de nacimiento y DNI son obligatorios", true);
         return;
       }
 
       try {
         if (idEnEdicion) {
           await updateDoc(doc(db, "recienNacidos", idEnEdicion), data);
+          mostrarToast("Registro actualizado correctamente");
         } else {
           await addDoc(colPacientes, data);
+          mostrarToast("Registro guardado exitosamente");
         }
         limpiarFormulario();
-        await cargarTodosRegistros();
+        
+        registrosActuales = []; 
+        renderTabla(); 
+
       } catch (e) {
         console.error(e);
-        alert("Error al guardar el registro.");
+        mostrarToast("Error al guardar en base de datos", true);
       }
     });
 
@@ -538,20 +597,27 @@
     btnBuscarDNI.addEventListener("click", () => {
       buscarPorDNI(dniBusqueda.value);
     });
+    
+    // Conectamos el botón de búsqueda por rango
+    btnBuscarRango.addEventListener("click", () => {
+        buscarPorRango(busqFechaDesde.value, busqFechaHasta.value);
+    });
 
     btnVerTodos.addEventListener("click", () => {
       dniBusqueda.value = "";
+      busqFechaDesde.value = "";
+      busqFechaHasta.value = "";
       cargarTodosRegistros();
     });
 
     btnExportarFiltrados.addEventListener("click", () => {
       if (!registrosActuales.length) {
-        alert("No hay registros para exportar.");
+        mostrarToast("No hay registros en pantalla para exportar", true);
         return;
       }
-      const filtrados = filtrarPorFecha(registrosActuales);
+      const filtrados = filtrarPorFechaLocal(registrosActuales);
       if (!filtrados.length) {
-        alert("No hay registros en el rango de fechas seleccionado.");
+        mostrarToast("El filtro de fechas excluyó todos los registros", true);
         return;
       }
       const csv = generarCSV(filtrados);
@@ -563,19 +629,19 @@
         const snap = await getDocs(colPacientes);
         const todos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         if (!todos.length) {
-          alert("No hay registros para exportar.");
+          mostrarToast("La base de datos está vacía", true);
           return;
         }
         const csv = generarCSV(todos);
         descargarCSV("neonatos_todos.csv", csv);
       } catch (e) {
         console.error(e);
-        alert("Error al exportar todos los registros.");
+        mostrarToast("Error al exportar todos", true);
       }
     });
 
     // ----------------- Inicio -----------------
-    cargarTodosRegistros();
+    renderTabla();
   </script>
 </body>
 </html>
