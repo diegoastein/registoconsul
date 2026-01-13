@@ -27,7 +27,6 @@
       </div>
     </header>
 
-    <!-- SECCIÓN 1: INGRESO / VALIDACIÓN DNI -->
     <section class="bg-white rounded-xl shadow-sm p-4 md:p-6 space-y-4 border-l-4 border-sky-500">
       <div class="flex items-center justify-between">
         <h2 class="text-lg font-semibold text-slate-800">Carga de Paciente</h2>
@@ -99,7 +98,6 @@
       </form>
     </section>
 
-    <!-- SECCIÓN 2: BÚSQUEDA Y ACCIONES (RESTAURADA) -->
     <section class="bg-white rounded-xl shadow-sm p-4 md:p-6 space-y-4">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <h2 class="text-lg font-semibold text-slate-800">Búsqueda y Exportación</h2>
@@ -139,7 +137,6 @@
       </div>
     </section>
 
-    <!-- SECCIÓN 3: ESTADÍSTICAS -->
     <section class="bg-white rounded-xl shadow-sm p-4 md:p-6 space-y-4">
       <div class="grid md:grid-cols-4 gap-4 text-sm">
         <div class="p-3 rounded-lg bg-sky-50 border border-sky-100">
@@ -161,7 +158,6 @@
       </div>
     </section>
 
-    <!-- SECCIÓN 4: TABLA -->
     <section class="bg-white rounded-xl shadow-sm p-4 md:p-6 space-y-4">
       <div class="overflow-x-auto border border-slate-200 rounded-lg">
         <table class="min-w-full text-xs md:text-sm">
@@ -232,6 +228,13 @@
       else form.classList.add("disabled-section");
     }
 
+    // Nueva función para formatear fecha a DD/MM/AAAA
+    function formatearFechaLatino(fechaISO) {
+      if (!fechaISO) return "-";
+      const [anio, mes, dia] = fechaISO.split("-");
+      return `${dia}/${mes}/${anio}`;
+    }
+
     function limpiarCarga() {
       form.reset();
       inputDni.value = "";
@@ -295,7 +298,7 @@
         const tr = document.createElement("tr");
         tr.className = "hover:bg-slate-50";
         tr.innerHTML = `
-          <td class="px-2 py-3">${reg.fechaNacimiento || "-"}</td>
+          <td class="px-2 py-3">${formatearFechaLatino(reg.fechaNacimiento)}</td>
           <td class="px-2 py-3 font-bold">${reg.dni}</td>
           <td class="px-2 py-3 text-right">${reg.peso ?? "-"}</td>
           <td class="px-2 py-3 text-right">${reg.edadGestacional ?? "-"}</td>
@@ -328,7 +331,17 @@
     function descargarCSV(lista, nombre) {
       if(!lista.length) return mostrarToast("No hay datos para exportar", true);
       const headers = ["DNI", "Fecha Nacimiento", "Peso", "Edad Gestacional", "Tipo Parto", "Apgar", "Dias Neo", "Edad Materna", "Observaciones"];
-      const rows = lista.map(r => [r.dni, r.fechaNacimiento, r.peso, r.edadGestacional, r.tipoParto, r.apgar, r.diasNeo, r.edadMaterna, `"${r.otros||''}"`].join(","));
+      const rows = lista.map(r => [
+          r.dni, 
+          formatearFechaLatino(r.fechaNacimiento), 
+          r.peso, 
+          r.edadGestacional, 
+          r.tipoParto, 
+          r.apgar, 
+          r.diasNeo, 
+          r.edadMaterna, 
+          `"${r.otros||''}"`
+      ].join(","));
       const csv = headers.join(",") + "\n" + rows.join("\n");
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
